@@ -8,7 +8,7 @@ st.write("""
 
 option = st.selectbox(
     'Choose Model',
-    ('Linear Regression', 'Ridge Regression', 'Lasso Regression', 'KNN', 'Desicion Tree', 'Random Forest'))
+    ('Please Select a Model','Linear Regression', 'Ridge Regression', 'Lasso Regression', 'KNN', 'Desicion Tree', 'Random Forest'))
 
 st.write('You selected:', option)
 
