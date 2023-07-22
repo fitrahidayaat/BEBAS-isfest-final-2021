@@ -1,6 +1,6 @@
 import yfinance as yf
 import streamlit as st
-
+st.set_page_config(layout="wide")
 # title
 st.write("""
 # ISFEST 2021 : Final Data Competition - BEBAS
