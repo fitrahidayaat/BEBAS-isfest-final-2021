@@ -8,11 +8,12 @@ st.write("""
 
 option = st.selectbox(
     'Choose Model',
-    ('Please Select a Model','Linear Regression', 'Ridge Regression', 'Lasso Regression', 'KNN', 'Desicion Tree', 'Random Forest'))
+    ('Select Model','Linear Regression', 'Ridge Regression', 'Lasso Regression', 'KNN', 'Desicion Tree', 'Random Forest'))
 
-st.write('You selected:', option)
+
 
 if option == 'Linear Regression':
+    st.write('You selected:', option)
     code = """
         model = LinearRegression()
         # Melatih model pada set pelatihan
@@ -32,6 +33,7 @@ if option == 'Linear Regression':
         MSE 6.028820598411803e+17
     """, language='txt')
 elif option == 'Ridge Regression':
+    st.write('You selected:', option)
     code = """
         model = Ridge(alpha=10)
         # Melatih model pada set pelatihan
@@ -51,6 +53,7 @@ elif option == 'Ridge Regression':
         MSE 6.028996590432365e+17
     """, language='txt')
 elif option == 'Lasso Regression':
+    st.write('You selected:', option)
     code = """
         model = Lasso(alpha=0.001)
         # Melatih model pada set pelatihan
@@ -70,6 +73,7 @@ elif option == 'Lasso Regression':
         MSE 6.028820598412529e+17
     """, language='txt')
 elif option == 'KNN':
+    st.write('You selected:', option)
     code = """
         model = KNeighborsRegressor(n_neighbors=3)
         # Melatih model pada set pelatihan
@@ -89,6 +93,7 @@ elif option == 'KNN':
         MSE 3.1374592222222224e+16
     """, language='txt')
 elif option == 'Desicion Tree':
+    st.write('You selected:', option)
     code = """
         model = DecisionTreeRegressor(max_depth=8)
         # Melatih model pada set pelatihan
@@ -108,6 +113,7 @@ elif option == 'Desicion Tree':
         MSE 1.838063551205794e+17
     """, language='txt')
 elif option == 'Random Forest':
+    st.write('You selected:', option)
     code = """
         model = RandomForestRegressor(n_estimators=100,
                               random_state=3,
