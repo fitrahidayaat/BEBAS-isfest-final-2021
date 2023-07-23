@@ -8,15 +8,14 @@ from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor,Ada
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score,mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
+import time
 
 st.set_page_config(layout="wide")
 
 # import data
-X = pd.read_csv('X.csv')
-y = pd.read_csv('y.csv')
-X.drop('Unnamed: 0', axis=1, inplace=True)
-y.drop('Unnamed: 0', axis=1, inplace=True)
-X = X.drop(['long', 'lat', 'electricity'], axis=1)
+df = pd.read_csv('final-EDA-jabodetabek-house-price.csv')
+X = df.drop(['price_in_rp', 'district'], axis=1)
+y = df['price_in_rp']
 
 
 # title
@@ -31,15 +30,56 @@ with col1:
         ('Select Model','Linear Regression', 'Ridge Regression', 'Lasso Regression', 'KNN', 'Desicion Tree', 'Random Forest')
     )
     # selected_columns = ['district', 'city', 'facilities', 'certificate', 'property_condition', 'building_size_m2', 'land_size_m2', 'maid_bathrooms','electricity', 'bedrooms','floors','carports','garages']
+    city = st.selectbox(
+        'City', 
+        ('Bekasi','Bogor', 'Tangerang', 'Depok', 'Jakarta Selatan', 'Jakarta Barat', 'Jakarta Utara', 'Jakarta Timur', 'Jakarta Pusat')
+    )
     building_size_m2 = st.number_input('Building Size (m2)', format='%f',value=272.0)
+    certificate = st.selectbox(
+        'Certificate',
+        ('shm - sertifikat hak milik', 'hgb - hak guna bangunan', 'lainnya')
+    )
+    property_condition = st.selectbox(
+        'Property Condition',
+        ('bagus', 'baru', 'bagus sekali', 'sudah renovasi', 'butuh renovasi')
+    )
     land_size_m2 = st.number_input('Land Size (m2)', format='%f', value=239.0)
-    maid_bathrooms = float(st.number_input('Maid Bathrooms', format='%d',value=1))
-    maid_bedrooms = float(st.number_input('Maid Bedrooms', format='%d', value=0))
+    electricity = st.number_input('Electricity (mah)', format='%f', value=4400.0)
     bedrooms = float(st.number_input('Bedrooms', format='%d', value=2))
-    floors = float(st.number_input('Floors', format='%d', value=2))
-    carports = float(st.number_input('Carports', format='%d', value=0))
-    garages = float(st.number_input('Garages', format='%d', value=0))
+    
+    # preprocessing input
+    citymap = {
+        'Bogor': 1.0,
+        'Tangerang': 8.0,
+        'Bekasi': 0.0,
+        'Depok': 2.0,
+        'Jakarta Selatan': 5.0,
+        'Jakarta Barat': 3.0,
+        'Jakarta Utara': 7.0,
+        'Jakarta Timur': 6.0,
+        'Jakarta Pusat': 4.0
+    }
+    city = citymap[city]
 
+    building_size_m2 = np.sqrt(building_size_m2)
+
+    certificate_map = {
+        'shm - sertifikat hak milik': 2.0,
+        'hgb - hak guna bangunan': 0.0,
+        'lainnya': 1.0
+    }
+    certificate = certificate_map[certificate]
+
+    property_condition_map = {
+        'bagus': 0.0,
+        'baru': 2.0,
+        'bagus sekali': 1.0,
+        'sudah renovasi': 4.0,
+        'butuh renovasi': 3.0
+    }
+    property_condition = property_condition_map[property_condition]
+    
+    land_size_m2 = np.sqrt(land_size_m2)
 
 
 
@@ -73,22 +113,25 @@ with col2:
         # Melatih model pada set pelatihan
         # print(y)
         # print('test')
-        model.fit(X, y)
+        with st.spinner('Wait for it...'):
+            model.fit(X, y)
 
-        X_test = pd.DataFrame({'building_size_m2': [building_size_m2],
-                                'land_size_m2': [land_size_m2],
-                                'maid_bathrooms': [maid_bathrooms],
-                                'maid_bedrooms': [maid_bedrooms],
-                                'bedrooms': [bedrooms],
-                                'floors': [floors],
-                                'carports': [carports],
-                                'garages': [garages]})
-        # print(X_test)
-        # Membuat prediksi pada set pengujian
-        y_pred = model.predict(X_test)
-        try:
-            st.write('Predicted Price:', y_pred[0][0])
-        except:
-            st.write('Predicted Price:', y_pred[0])
+            X_test = pd.DataFrame({
+                'city': [city],
+                'building_size_m2': [building_size_m2],
+                'certificate': [certificate],
+                'property_condition': [property_condition],
+                'land_size_m2': [land_size_m2],
+                'electricity': [electricity],
+                'bedrooms': [bedrooms]
+            })
+
+            y_pred = model.predict(X_test)
+            
+
+            try:
+                st.write('Predicted Price:', y_pred[0][0])
+            except:
+                st.write('Predicted Price:', y_pred[0])
     except:
         st.write('Please select a model.')
